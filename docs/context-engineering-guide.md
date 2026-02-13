@@ -61,20 +61,14 @@ Archive (historical reference only):
 
 AI agents process structured data more efficiently than narrative prose.
 
-  **Instead of:**                                   
-  > The project uses [tool] v[version] for
-  [purpose]. The [service] runs on a [Server A] at  
-  IP [IP-A] with user [username-a]. The             
-  [other-service] is on a separate [Server B] at
-  [IP-B].
+**Instead of:**
+> The project uses Docker Compose v2 for container orchestration. The API server runs on production-01 at IP 192.168.1.10 with user deploy. The monitoring stack is on a separate server monitoring-01 at 192.168.1.20 with user admin.
 
-  **Use:**
-  | Server | IP | User | Purpose |
-  |--------|-----|------|---------|
-  | [Server A] | [IP-A] | [username-a] | [Service A
-  description] |
-  | [Server B] | [IP-B] | [username-b] | [Service B
-  description] |
+**Use:**
+| Server | IP | User | Purpose |
+|--------|-----|------|---------|
+| production-01 | 192.168.1.10 | deploy | API server runtime |
+| monitoring-01 | 192.168.1.20 | admin | ELK + Grafana stack |
 
 **Preferred formats (most to least efficient):**
 1. Tables (best for multi-field data)
