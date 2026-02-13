@@ -9,9 +9,14 @@ A set of Claude Code slash commands that implement context engineering best prac
 - [What Is This?](#what-is-this)
 - [Quick Start](#quick-start)
 - [Installation](#installation)
-  - [New Project](#new-project)
-  - [Existing Project](#existing-project)
+  - [Automated Installation](#automated-installation-recommended)
+  - [Manual Installation](#manual-installation)
+  - [Upgrading Existing Installation](#upgrading-existing-installation)
 - [Commands](#commands)
+  - [/context-init](#context-init---project-initialization)
+  - [/context-ingest](#context-ingest---smart-context-ingestion)
+  - [/context-start](#context-start---session-management)
+  - [/context-refactor](#context-refactor---implementation-audit--refactor)
 - [What Gets Created](#what-gets-created)
 - [How It Works](#how-it-works)
 - [Customization](#customization)
@@ -55,8 +60,14 @@ cd context-engineering-skill
 ./install.sh
 # (Enter your project path when prompted)
 
-# 3. Open your project in Claude Code and run:
+# 3a. NEW project? Initialize from scratch:
 /context-init
+
+# 3b. EXISTING context engineering? Audit & upgrade:
+/context-refactor
+
+# 4. Every session, start with:
+/context-start
 ```
 
 ---
@@ -85,12 +96,21 @@ The installer will:
 - Copy skill files (templates, docs) to your project
 - Verify installation and show next steps
 
-**Step 3: Initialize your project**
+**Step 3a: NEW project - Initialize**
 
 Open your project in Claude Code and run:
 ```
 /context-init
 ```
+Interactive wizard creates complete structure from scratch.
+
+**Step 3b: EXISTING context engineering - Audit & upgrade**
+
+If you already have CLAUDE.md and context files:
+```
+/context-refactor
+```
+Audits your implementation and fixes issues.
 
 ### Manual Installation
 
@@ -217,41 +237,159 @@ See [docs/commands-reference.md](docs/commands-reference.md) for the full flow.
 
 ### `/context-refactor` - Implementation Audit & Refactor
 
-Audits an existing context engineering implementation and refactors it to match best practices.
+Audits an **existing** context engineering implementation and refactors it to match current best practices and templates.
 
-**What it audits:**
-1. Security (credentials, API keys, passwords)
-2. Structure (required files, naming conventions)
-3. Token budget (CLAUDE.md size, total always-loaded)
-4. Format (tables vs prose, structured data)
-5. Story system (naming, metadata, INDEX.md)
+> **When to use:** For projects that ALREADY have context engineering (CLAUDE.md, .claude/rules/, etc.). For NEW projects, use `/context-init` instead.
 
-**Modes:**
-- `--report-only` - Generate audit report without changes
-- `--auto` - Automatically apply all safe fixes
-- Interactive (default) - Review each fix before applying
+**Usage:**
+```
+/context-refactor              # Interactive mode (default)
+/context-refactor --report-only   # Generate audit report only
+/context-refactor --auto          # Auto-apply safe fixes
+```
 
-**What it fixes:**
+#### What It Audits
+
+**1. Security (CRITICAL Priority)**
+- API keys, passwords, tokens in CLAUDE.md, rules, or stories
+- SSH private keys
+- Exposed credentials anywhere except context/SYSTEM.md
+- Pattern matching: `api[_-]?key`, `sk-*`, `password`, `token`, `BEGIN.*PRIVATE KEY`
+
+**2. Structure (HIGH Priority)**
+- Required files: CLAUDE.md, 3 rule files, INDEX.md
+- CLAUDE.md line count (target: <150 lines, max: <200 lines)
+- File naming conventions: STATUS-XXX-slug.md for stories
+- Directory structure matches schema
+
+**3. Token Budget (HIGH Priority)**
+- Always-loaded context calculation (lines × 10)
+- Target: <2,500 tokens total
+- Maximum: <3,000 tokens total
+- Breakdown by file (CLAUDE.md + all .claude/rules/*.md)
+
+**4. Format (MEDIUM Priority)**
+- CLAUDE.md structure matches template
+- Metadata blocks present in stories
+- Tables vs prose (structured data preferred)
+- INDEX.md follows standard sections
+
+**5. Story System (MEDIUM Priority)**
+- Story file naming: ACTIVE-, DONE-, BLOCKED-, BACKLOG- prefixes
+- Metadata blocks in each story
+- INDEX.md lists all stories properly
+
+**6. Content (LOW Priority)**
+- Prose paragraphs that could be tables
+- Optimization opportunities
+
+#### Modes Explained
+
+| Mode | When to Use | Behavior |
+|------|-------------|----------|
+| **Interactive** (default) | Most common case | Reviews each fix, asks for approval before applying |
+| `--report-only` | Initial assessment, high token sessions | Generates report, makes NO changes |
+| `--auto` | Trusted setup, minor fixes | Auto-applies safe fixes, skips risky ones |
+
+#### What It Fixes
+
+**Safe Fixes (auto-fixable):**
 - Missing rule files (created from templates)
-- Wrong file naming (story files renamed to standard)
-- Missing metadata blocks
-- Token budget violations (suggests content moves)
-- Security issues (guides credential relocation)
+- Missing CONTEXT-SCHEMA.yaml or MEMORY-PROTOCOL.md
+- Wrong story naming (auto-renames to STATUS-XXX-slug.md)
+- Missing metadata blocks (added to story files)
+- Missing INDEX.md (created from template)
 
-**Features:**
-- Always creates backups before modifications
-- Compares against canonical templates
-- Provides detailed severity-based report
-- Safe fixes applied automatically, risky ones need approval
-- Re-audits after fixes to verify
+**Interactive Fixes (needs approval):**
+- Credentials found (shows location, offers to move to SYSTEM.md)
+- CLAUDE.md over 200 lines (suggests content to split out)
+- Prose paragraphs (shows table conversion preview)
+- Token budget over target (suggests files to move out)
 
-**Use cases:**
-- Upgrading old context engineering setup
-- Auditing compliance with best practices
-- Fixing structural issues
-- Preparing for team adoption
+**Manual Fixes (guidance only):**
+- Exposed API keys (provides step-by-step remediation)
+- Significant structural mismatches (suggests /context-init)
+- Complex content issues (provides specific suggestions)
 
-See [docs/commands-reference.md](docs/commands-reference.md) for detailed audit checks and examples.
+#### Safety Features
+
+**Mandatory Backups:**
+- Always creates `.backup/context-refactor-[timestamp]/` before ANY modifications
+- Copies all files that will be modified
+- Adds `.backup/` to .gitignore automatically
+- You can restore from backup if needed
+
+**Conservative Approach:**
+- NEVER auto-moves credentials (security sensitive)
+- NEVER modifies files without approval (unless --auto mode)
+- NEVER logs or displays actual credential values
+- Respects intentional deviations from standards
+
+**Verification:**
+- Re-runs audit checks after applying fixes
+- Confirms issues are resolved
+- Reports before/after metrics
+
+#### Example Output
+
+```
+=== Context Engineering Audit Report ===
+
+Project: ai-local-chatbot
+Audit Date: 2026-02-13
+Overall Status: NEEDS ATTENTION
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CRITICAL Issues (1):
+  ⚠️  API key found in CLAUDE.md
+      File: CLAUDE.md:42
+      Fix: Move to context/SYSTEM.md
+
+HIGH Priority Issues (2):
+  ▲ CLAUDE.md exceeds target
+     Current: 185 lines (~1,850 tokens)
+     Expected: <150 lines
+     Fix: Move Key Learnings to context/PROJECT-HISTORY.md
+
+  ▲ Token budget over target
+     Current: 2,850 tokens
+     Target: <2,500 tokens
+
+MEDIUM Priority Issues (1):
+  ● Story naming doesn't match convention
+     Suggestion: Rename story-001.md → BACKLOG-001-story.md
+
+Token Budget Analysis:
+  CLAUDE.md:                    185 lines (~1,850 tokens)
+  core-rules.md:                 28 lines (~280 tokens)
+  context-enforcement.md:        83 lines (~830 tokens)
+  ────────────────────────────────────────
+  Total:                        296 lines (~2,960 tokens)
+  Status:                       ⚠ Over target by 460 tokens
+
+How would you like to proceed?
+A) Auto-fix safe issues (structure, missing files, renames)
+B) Interactive fix (review each issue before applying)
+C) Cancel (just show me the report)
+```
+
+#### Use Cases
+
+| Scenario | How to Use |
+|----------|------------|
+| Upgrading old context engineering | Run `/context-refactor` to align with latest standards |
+| Periodic compliance audit | Run `/context-refactor --report-only` monthly |
+| After major changes | Verify structure still compliant |
+| Team adoption prep | Audit and fix all issues before sharing |
+| Token budget cleanup | Find and fix budget violations |
+
+#### When NOT to Use
+
+- **New project with no context engineering**: Use `/context-init` instead
+- **Completely custom structure**: This tool enforces standards; customize at your own risk
+- **Just learning the system**: Start with `/context-init` to see proper structure first
+
+See [docs/commands-reference.md](docs/commands-reference.md) for detailed audit checks, all patterns used, and more examples.
 
 ---
 
@@ -267,6 +405,7 @@ your-project/
       context-init.md                     # /context-init command
       context-ingest.md                   # /context-ingest command
       context-start.md                    # /context-start command
+      context-refactor.md                 # /context-refactor command
     rules/
       core-rules.md                       # 7 mandatory agent rules
       context-enforcement.md              # Session checklists
