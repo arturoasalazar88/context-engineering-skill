@@ -1,0 +1,114 @@
+# Context Assembly Schema
+# Defines what context loads and when
+
+version: "1.0.0"
+created: "{{DATE}}"
+
+# Token budgets by tier
+tiers:
+  always:
+    description: "Loaded every session automatically"
+    files:
+      - path: "CLAUDE.md"
+        max_tokens: 1500
+        note: "Single entry point, kept slim"
+      - path: ".claude/rules/core-rules.md"
+        max_tokens: 500
+        note: "Essential rules only"
+    total_budget: 2000
+
+  session_start:
+    description: "Loaded at start of each session by agent"
+    files:
+      - path: "context/stories/INDEX.md"
+        note: "Read header + active stories table only"
+        max_tokens: 1000
+    total_budget: 1000
+
+  per_task:
+    description: "Loaded when starting a specific task"
+    files:
+      - path: "context/stories/ACTIVE-*.md"
+        note: "Load the active story being worked on"
+        max_tokens: 1500
+      # Add project-specific task context files below:
+      # - path: "context/CONFIG.md"
+      #   condition: "When editing configuration"
+      #   max_tokens: 600
+    total_budget: 3000
+
+  on_demand:
+    description: "Loaded only when specific need arises"
+    files:
+      # Workflow rules
+      - path: "context/workflows/user-approval.md"
+        condition: "When completing/resolving tasks"
+        max_tokens: 1800
+
+      # Domain knowledge
+      - path: "context/SYSTEM.md"
+        condition: "When needing server access or credentials"
+        max_tokens: 800
+      - path: "context/MEMORY-PROTOCOL.md"
+        condition: "When managing memory layers"
+        max_tokens: 1500
+
+      # Add project-specific on-demand files below:
+      # - path: "context/TROUBLESHOOTING.md"
+      #   condition: "When debugging issues"
+      #   max_tokens: 1000
+    total_budget: 5000
+
+  archive:
+    description: "Only for historical reference"
+    files:
+      - path: "context/stories/DONE-*.md"
+        condition: "When reviewing completed work"
+      - path: "context/stories/SESSION-LOG.md"
+        condition: "When reviewing past sessions"
+        max_tokens: 2000
+    total_budget: 2000
+
+# Priority order for context assembly
+priority_order:
+  1: "current_user_query"
+  2: "system_instructions"
+  3: "active_task_context"
+  4: "recent_history"
+  5: "domain_knowledge"
+  6: "workflow_rules"
+  7: "historical_reference"
+
+# Loading triggers (when to load workflow rules)
+triggers:
+  user_approval:
+    rule: "BEFORE marking any task/bug as resolved"
+    action: "Load context/workflows/user-approval.md"
+
+  # Add project-specific triggers below:
+  # custom_trigger:
+  #   rule: "BEFORE doing X"
+  #   action: "Load context/workflows/custom.md"
+
+# Total context budget allocation
+total_context_budget:
+  always_loaded: 2000
+  typical_session: 6000   # always + start + per_task
+  maximum_allowed: 13000  # always + start + per_task + on_demand
+  reserve_buffer: 2000    # for unexpected complexity
+
+# Compaction strategy
+compaction:
+  trigger: "When context exceeds 80% of maximum_allowed"
+  strategy:
+    - "Clear verbose tool outputs (keep conclusions)"
+    - "Summarize older conversation turns"
+    - "Extract key decisions to story file"
+    - "Re-read story file after compaction"
+
+# Validation metrics
+metrics:
+  signal_density: "Information value per token"
+  retrieval_accuracy: "Right info loaded for task"
+  memory_freshness: "How current is persisted info"
+  context_efficiency: "Tokens used vs needed"
