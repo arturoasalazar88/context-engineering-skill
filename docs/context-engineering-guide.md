@@ -61,14 +61,20 @@ Archive (historical reference only):
 
 AI agents process structured data more efficiently than narrative prose.
 
-**Instead of:**
-> The project uses Docker Compose v2 for container management. The bot runs on an Orange Pi 5 at IP 10.1.0.104 with user rdpuser. The monitoring stack is on a separate Orange Pi 3B at 10.1.0.106.
+  **Instead of:**                                   
+  > The project uses [tool] v[version] for
+  [purpose]. The [service] runs on a [Server A] at  
+  IP [IP-A] with user [username-a]. The             
+  [other-service] is on a separate [Server B] at
+  [IP-B].
 
-**Use:**
-| Server | IP | User | Purpose |
-|--------|-----|------|---------|
-| Orange Pi 5 | 10.1.0.104 | rdpuser | Bot runtime |
-| Orange Pi 3B | 10.1.0.106 | triptaste | Monitoring |
+  **Use:**
+  | Server | IP | User | Purpose |
+  |--------|-----|------|---------|
+  | [Server A] | [IP-A] | [username-a] | [Service A
+  description] |
+  | [Server B] | [IP-B] | [username-b] | [Service B
+  description] |
 
 **Preferred formats (most to least efficient):**
 1. Tables (best for multi-field data)
