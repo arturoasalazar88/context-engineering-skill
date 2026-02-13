@@ -47,12 +47,13 @@ These principles were developed through real-world usage, reducing static contex
 ## Quick Start
 
 ```bash
-# 1. Copy the skill to your project
-cp -r context-engineering-skill/ /path/to/your-project/context-engineering-skill/
+# 1. Get the skill
+git clone https://github.com/arturoasalazar88/context-engineering-skill.git
+cd context-engineering-skill
 
-# 2. Install the commands
-mkdir -p /path/to/your-project/.claude/commands
-cp context-engineering-skill/commands/*.md /path/to/your-project/.claude/commands/
+# 2. Run the installer
+./install.sh
+# (Enter your project path when prompted)
 
 # 3. Open your project in Claude Code and run:
 /context-init
@@ -62,77 +63,80 @@ cp context-engineering-skill/commands/*.md /path/to/your-project/.claude/command
 
 ## Installation
 
-### New Project
+### Automated Installation (Recommended)
 
-Follow these steps to add context engineering to a brand new project.
-
-**Step 1: Get the skill files**
-
-Clone or copy the `context-engineering-skill/` folder to your project root:
+**Step 1: Get the skill**
 
 ```bash
-# Option A: Copy from another project
-cp -r /path/to/source/context-engineering-skill/ /path/to/your-project/
-
-# Option B: Clone the repo (if published separately)
-cd /path/to/your-project
-git clone <repo-url> context-engineering-skill
+git clone https://github.com/arturoasalazar88/context-engineering-skill.git
+cd context-engineering-skill
 ```
 
-**Step 2: Create the commands directory**
+**Step 2: Run the installer**
 
 ```bash
-mkdir -p /path/to/your-project/.claude/commands
+./install.sh
 ```
 
-**Step 3: Install the command files**
+The installer will:
+- Ask for your target project path
+- Detect your agent tool (Claude Code, etc.)
+- Install all 4 commands to the appropriate directory
+- Copy skill files (templates, docs) to your project
+- Verify installation and show next steps
 
-```bash
-cp context-engineering-skill/commands/context-init.md .claude/commands/
-cp context-engineering-skill/commands/context-ingest.md .claude/commands/
-cp context-engineering-skill/commands/context-start.md .claude/commands/
-cp context-engineering-skill/commands/context-refactor.md .claude/commands/
-```
+**Step 3: Initialize your project**
 
-**Step 4: Verify installation**
-
-```bash
-# You should see 4 command files
-ls .claude/commands/context-*.md
-```
-
-Expected output:
-```
-.claude/commands/context-init.md
-.claude/commands/context-ingest.md
-.claude/commands/context-refactor.md
-.claude/commands/context-start.md
-```
-
-**Step 5: Initialize the project**
-
-Open the project in Claude Code and run:
+Open your project in Claude Code and run:
 ```
 /context-init
 ```
 
-This starts an interactive wizard that asks about your project and creates the full context engineering structure.
+### Manual Installation
 
-**Step 6: Start your first session**
+If you prefer manual installation or need to troubleshoot:
 
+**Step 1: Copy skill to your project**
+
+```bash
+cp -r context-engineering-skill/ /path/to/your-project/
 ```
-/context-start
+
+**Step 2: Install commands**
+
+```bash
+cd /path/to/your-project
+mkdir -p .claude/commands
+cp context-engineering-skill/commands/*.md .claude/commands/
 ```
 
-### Existing Project
+**Step 3: Verify**
 
-If your project already has some context files (CLAUDE.md, etc.), the process is the same. The `/context-init` command detects existing files:
+```bash
+ls .claude/commands/context-*.md
+```
 
-- **Full structure exists**: Offers to reinitialize or cancel
-- **Partial structure**: Completes the missing pieces without overwriting existing files
-- **No structure**: Creates everything from scratch
+Expected: 4 files (context-init.md, context-ingest.md, context-refactor.md, context-start.md)
 
-Follow the same steps as "New Project" above. The init wizard will handle the rest.
+**Step 4: Initialize**
+
+Open in Claude Code and run: `/context-init`
+
+### Upgrading Existing Installation
+
+If you already have context engineering and want to add the new `/context-refactor` command:
+
+```bash
+cd context-engineering-skill
+./install.sh
+# Enter your project path
+# Choose to overwrite when prompted
+```
+
+Or manually:
+```bash
+cp context-engineering-skill/commands/context-refactor.md /path/to/project/.claude/commands/
+```
 
 ### Verify Everything Works
 
