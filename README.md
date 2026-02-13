@@ -24,13 +24,14 @@ A set of Claude Code slash commands that implement context engineering best prac
 
 ## What Is This?
 
-Three Claude Code slash commands that automate context engineering:
+Four Claude Code slash commands that automate context engineering:
 
 | Command | Purpose | When to Use |
 |---------|---------|-------------|
 | `/context-init` | Initialize project with context engineering | Once, at project setup |
 | `/context-ingest` | Add new context intelligently | Anytime you have new info to add |
 | `/context-start` | Start session with proper context loading | Beginning of every session |
+| `/context-refactor` | Audit and refactor existing implementation | When upgrading or fixing issues |
 
 **Context engineering** is a set of principles for managing AI agent context effectively:
 - Keep always-loaded context minimal (<2,500 tokens)
@@ -90,12 +91,13 @@ mkdir -p /path/to/your-project/.claude/commands
 cp context-engineering-skill/commands/context-init.md .claude/commands/
 cp context-engineering-skill/commands/context-ingest.md .claude/commands/
 cp context-engineering-skill/commands/context-start.md .claude/commands/
+cp context-engineering-skill/commands/context-refactor.md .claude/commands/
 ```
 
 **Step 4: Verify installation**
 
 ```bash
-# You should see 3 command files
+# You should see 4 command files
 ls .claude/commands/context-*.md
 ```
 
@@ -103,6 +105,7 @@ Expected output:
 ```
 .claude/commands/context-init.md
 .claude/commands/context-ingest.md
+.claude/commands/context-refactor.md
 .claude/commands/context-start.md
 ```
 
@@ -207,6 +210,44 @@ Automates the beginning of every work session.
 | Critical | 160K+ | End immediately |
 
 See [docs/commands-reference.md](docs/commands-reference.md) for the full flow.
+
+### `/context-refactor` - Implementation Audit & Refactor
+
+Audits an existing context engineering implementation and refactors it to match best practices.
+
+**What it audits:**
+1. Security (credentials, API keys, passwords)
+2. Structure (required files, naming conventions)
+3. Token budget (CLAUDE.md size, total always-loaded)
+4. Format (tables vs prose, structured data)
+5. Story system (naming, metadata, INDEX.md)
+
+**Modes:**
+- `--report-only` - Generate audit report without changes
+- `--auto` - Automatically apply all safe fixes
+- Interactive (default) - Review each fix before applying
+
+**What it fixes:**
+- Missing rule files (created from templates)
+- Wrong file naming (story files renamed to standard)
+- Missing metadata blocks
+- Token budget violations (suggests content moves)
+- Security issues (guides credential relocation)
+
+**Features:**
+- Always creates backups before modifications
+- Compares against canonical templates
+- Provides detailed severity-based report
+- Safe fixes applied automatically, risky ones need approval
+- Re-audits after fixes to verify
+
+**Use cases:**
+- Upgrading old context engineering setup
+- Auditing compliance with best practices
+- Fixing structural issues
+- Preparing for team adoption
+
+See [docs/commands-reference.md](docs/commands-reference.md) for detailed audit checks and examples.
 
 ---
 
