@@ -28,58 +28,85 @@ If NONE exist:
 "No context engineering structure detected. Run `/context-init` to set up from scratch."
 Stop here.
 
-### Step 2: Locate or Clone Skill Source
+### Step 2: Fetch Fixes Manifest
 
-The agent needs the `context-engineering-skill` repo to read fix manifests and source files.
+**Method 1: GitHub Raw URL (Preferred)**
 
-**Check in this order:**
-
-1. **Local copy in project:** Is `context-engineering-skill/` present in the project root?
-2. **Sibling directory:** Is `context-engineering-skill/` a sibling of the project root?
-3. **Clone from GitHub:** If not found locally, clone it:
-   ```bash
-   git clone https://github.com/arturosalazar/context-engineering-skill.git /tmp/context-engineering-skill
-   ```
-   Use `/tmp/context-engineering-skill` as the source path for this session.
-4. **If clone fails:** Ask the user: "Could not clone the skill repo. Provide the local path to your context-engineering-skill repo:"
-
-**If source already exists locally, pull latest:**
-```bash
-cd [skill-source-path] && git pull origin main
+Try to fetch the fixes manifest directly from GitHub:
 ```
-If pull fails (no network, etc.), continue with the current local version and warn:
-"Could not pull latest. Using local version — it may not include the newest fixes."
+https://raw.githubusercontent.com/arturoasalazar88/context-engineering-skill/main/FIXES-MANIFEST.yaml
+```
 
-Store the resolved path as `SKILL_SOURCE` for subsequent steps.
+If successful:
+- Parse the YAML to get available fixes list
+- Store `raw_base_url` from the manifest for fetching files later
+- Store repository URL for cloning if needed
 
-### Step 3: Read Fix Manifests
+**Method 2: Local Clone (Fallback)**
 
-Read all bug fix documents from `SKILL_SOURCE/docs/bugs/*.md`.
+If GitHub fetch fails (no network, etc.):
 
-For each bug doc:
-1. Read the `<metadata>` block at the top
-2. Extract: `id`, `status`, `severity`, `fixed_in`, `affects`
-3. Find the **Fix Manifest** section (heading `## Fix Manifest`)
-4. Parse the manifest to understand:
-   - **Files to Replace**: Files that can be safely copied from source to project
-   - **Files to Merge**: Files requiring targeted changes (with detection logic to skip if already applied)
-   - **Verification Steps**: How to confirm the fix was applied
+1. **Check for local copy in this order:**
+   - Project root: `context-engineering-skill/`
+   - Sibling directory: `../context-engineering-skill/`
+   - `/tmp/context-engineering-skill/`
 
-**Skip bug docs where:**
-- `<status>` is not `FIXED` (only apply completed fixes)
-- All changes in the manifest are already detected as applied in the project
+2. **If not found locally, clone:**
+   ```bash
+   git clone https://github.com/arturoasalazar88/context-engineering-skill.git /tmp/context-engineering-skill
+   ```
 
-### Step 4: Detect Already-Applied Fixes
+3. **If source exists, pull latest:**
+   ```bash
+   cd [skill-source-path] && git pull origin main
+   ```
 
-For each fix manifest, run the **Detection** checks described in the manifest:
+4. **If clone fails:** Ask user for local path
 
-- For "Files to Replace": Compare source file against project file — if identical (or project file is newer), mark as already applied
-- For "Files to Merge": Run each detection check (e.g., "Check if file contains X") — if detection passes, that change is already applied
+Store the resolved source as either:
+- `SOURCE_TYPE=github` with `RAW_BASE_URL`
+- `SOURCE_TYPE=local` with `SKILL_SOURCE` path
 
-Classify each bug fix as:
-- **Available**: One or more changes from this fix are not yet applied
-- **Already Applied**: All changes are detected as present
-- **Partial**: Some changes applied, some not
+### Step 3: Read Fixes from Manifest
+
+Parse the `FIXES-MANIFEST.yaml` obtained in Step 2:
+
+For each fix entry in `fixes:`:
+1. Extract metadata: `id`, `title`, `severity`, `status`, `fixed_in`
+2. Parse `files_changed:` list to understand what needs updating
+3. Note `verification:` steps for post-apply checks
+
+**File change types:**
+- `type: replace` - Safe to copy from source, overwrites project file
+- `type: merge` - Requires targeted changes with detection logic
+
+**Skip fixes where:**
+- `status` is not `FIXED` (only apply completed fixes)
+- All changes are already applied (detected in Step 4)
+
+### Step 4: Check Applied Fixes Status
+
+**Read project's applied fixes tracker:**
+Check if `context/APPLIED-FIXES.yaml` exists in the project root.
+
+**If it exists:**
+- Parse the `applied_fixes:` list
+- For each fix in FIXES-MANIFEST, check if its `id` is in applied list
+- If found, mark as "Already Applied"
+
+**If it doesn't exist:**
+- Create it from template when applying fixes
+- For now, manually detect by checking file content
+
+**Manual detection (for merge-type changes):**
+- Read the project file
+- Check for the `line_marker` or `detection` string from manifest
+- If found, that specific change is already applied
+
+**Classify each fix:**
+- **Available**: Not in applied list and changes not detected
+- **Already Applied**: In applied list or all changes detected
+- **Partial**: Some changes detected, some not (rare)
 
 ### Step 5: Compare Commands and Templates
 
@@ -180,13 +207,27 @@ Run '/context-update --apply' to apply these updates
 For each available bug fix, follow the fix manifest instructions:
 
 **Files to Replace:**
-- Copy source file to project location, overwriting the existing file
+- Fetch file from GitHub raw URL or local source
+- Copy to project location, overwriting existing file
 
 **Files to Merge:**
-- Read the current project file
-- Apply each change described in the manifest
-- Use the **Detection** check to confirm each change — skip changes already present
-- Preserve any project-specific content (custom rules, custom triggers, custom schema entries)
+- Read current project file
+- Apply each change described in manifest
+- Use detection check to skip changes already present
+- Preserve project-specific content
+
+**Update Applied Fixes Tracker:**
+After successfully applying a fix:
+1. If `context/APPLIED-FIXES.yaml` doesn't exist, create from template
+2. Add fix entry to `applied_fixes:` list:
+   ```yaml
+   - id: "BUG-001"
+     title: "Workflow Tracking in /context-start"
+     applied_date: "2026-02-14"
+     applied_version: "1.1.0"
+     verified: true
+   ```
+3. Add entry to `update_history:` list
 
 **Step 6c: Apply Command Updates**
 
@@ -235,15 +276,18 @@ Tip: Run '/context-start' to reload your session with the updated context.
 ## Important Rules
 
 **Source Management:**
-- ALWAYS try to locate the skill repo locally before cloning
-- If cloning, use `/tmp/context-engineering-skill` to avoid cluttering the project
-- ALWAYS pull latest before reading fix manifests
-- Only read bug docs with `<status>FIXED</status>` — never apply in-progress fixes
+- PREFER GitHub raw URLs to fetch manifest and files (works without cloning)
+- Use correct repository URL: `https://github.com/arturoasalazar88/context-engineering-skill`
+- If GitHub fetch fails, fallback to local clone at `/tmp/context-engineering-skill`
+- If cloning, ALWAYS pull latest before reading manifests
+- Only apply fixes with `status: FIXED` — never apply in-progress fixes
 
 **Fix Manifests:**
-- Fix manifests in `docs/bugs/*.md` are the source of truth for what to change
-- Always follow the Detection logic to skip already-applied changes
-- Never apply a change if detection shows it's already present
+- `FIXES-MANIFEST.yaml` is the single source of truth for available fixes
+- Each fix entry contains metadata and file change instructions
+- Always check `context/APPLIED-FIXES.yaml` to see what's already applied
+- Always follow detection logic to skip already-applied changes
+- Update APPLIED-FIXES.yaml after successfully applying fixes
 
 **Safety:**
 - ALWAYS create backup before ANY modifications (apply mode)

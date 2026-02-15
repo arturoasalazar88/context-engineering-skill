@@ -1,0 +1,25 @@
+# Applied Fixes Tracker
+# This file tracks which context engineering fixes have been applied to this project
+# Managed by /context-update command
+
+project_name: "{{PROJECT_NAME}}"
+context_engineering_version: "{{VERSION}}"
+last_updated: "{{DATE}}"
+
+# Applied fixes (in chronological order)
+applied_fixes: []
+  # Example entry after applying BUG-001:
+  # - id: "BUG-001"
+  #   title: "Workflow Tracking in /context-start"
+  #   applied_date: "2026-02-14"
+  #   applied_version: "1.1.0"
+  #   verified: true
+
+# Update history
+update_history: []
+  # Example entry:
+  # - date: "2026-02-14"
+  #   action: "apply"
+  #   fix_id: "BUG-001"
+  #   result: "success"
+  #   backup_location: ".claude/backup/2026-02-14-143022"

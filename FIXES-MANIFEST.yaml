@@ -1,0 +1,68 @@
+# Context Engineering - Fixes Manifest
+# Central registry of all bug fixes and updates
+# Used by /context-update to check and apply fixes
+
+version: "1.1.0"
+repository: "https://github.com/arturoasalazar88/context-engineering-skill"
+raw_base_url: "https://raw.githubusercontent.com/arturoasalazar88/context-engineering-skill/main"
+
+# Available fixes
+fixes:
+  - id: "BUG-001"
+    title: "Workflow Tracking in /context-start"
+    severity: "HIGH"
+    status: "FIXED"
+    introduced_in: "1.0.0"
+    fixed_in: "1.1.0"
+    date: "2026-02-14"
+
+    description: |
+      The /context-start command did not scan or report on context/workflows/ files.
+      This caused agents to violate mandatory workflow rules because they were unaware
+      of workflows marked with 🔒 MANDATORY or 🔒 INVIOLABLE.
+
+    impact:
+      - "Agents violated mandatory workflow rules"
+      - "Missed critical context during session start"
+      - "Token inefficiency from not using proper delegation"
+
+    solution: |
+      Added Step 3 to /context-start: Scan workflows directory, detect mandatory
+      markers, auto-load mandatory workflows, and list available workflows.
+
+    files_changed:
+      - path: "commands/context-start.md"
+        type: "replace"
+        checksum: "SHA256-placeholder"
+
+      - path: "templates/core-rules.template.md"
+        type: "merge"
+        change: "Add rule #8: Check context/workflows/ for mandatory workflows"
+        line_marker: "8. **ALWAYS check context/workflows/"
+
+      - path: "templates/CONTEXT-SCHEMA.template.yaml"
+        type: "merge"
+        changes:
+          - section: "tiers.mandatory_workflows"
+            detection: "mandatory_workflows:"
+          - section: "total_context_budget.mandatory_workflows"
+            detection: "mandatory_workflows: 3000"
+
+    verification:
+      - "Run /context-start in project"
+      - "Verify 'Mandatory workflows' section appears if workflows exist"
+      - "Verify workflows with 🔒 markers are auto-loaded"
+      - "Verify token budget includes mandatory workflow count"
+
+    documentation:
+      bug_report: "docs/bugs/BUG-001-workflow-tracking.md"
+      fix_manifest: "docs/bugs/BUG-001-workflow-tracking.md#fix-manifest"
+
+# Future fixes will be added here as:
+#
+# - id: "BUG-002"
+#   title: "..."
+#   severity: "MEDIUM|HIGH|CRITICAL"
+#   status: "FIXED|IN_PROGRESS|PLANNED"
+#   fixed_in: "1.2.0"
+#   ...
