@@ -2,7 +2,7 @@
 # Defines what context loads and when
 
 version: "1.0.0"
-created: "{{DATE}}"
+created: "2026-02-14"
 
 # Token budgets by tier
 tiers:
@@ -37,11 +37,10 @@ tiers:
       - path: "context/stories/ACTIVE-*.md"
         note: "Load the active story being worked on"
         max_tokens: 1500
-      # Add project-specific task context files below:
-      # - path: "context/CONFIG.md"
-      #   condition: "When editing configuration"
-      #   max_tokens: 600
-    total_budget: 3000
+      - path: "docs/*.md"
+        condition: "When understanding methodology or commands"
+        max_tokens: 3000
+    total_budget: 4500
 
   on_demand:
     description: "Loaded only when specific need arises"
@@ -58,12 +57,10 @@ tiers:
       - path: "context/MEMORY-PROTOCOL.md"
         condition: "When managing memory layers"
         max_tokens: 1500
-
-      # Add project-specific on-demand files below:
-      # - path: "context/TROUBLESHOOTING.md"
-      #   condition: "When debugging issues"
-      #   max_tokens: 1000
-    total_budget: 5000
+      - path: "docs/bugs/*.md"
+        condition: "When applying bug fixes or understanding issues"
+        max_tokens: 2000
+    total_budget: 6100
 
   archive:
     description: "Only for historical reference"
@@ -91,17 +88,12 @@ triggers:
     rule: "BEFORE marking any task/bug as resolved"
     action: "Load context/workflows/user-approval.md"
 
-  # Add project-specific triggers below:
-  # custom_trigger:
-  #   rule: "BEFORE doing X"
-  #   action: "Load context/workflows/custom.md"
-
 # Total context budget allocation
 total_context_budget:
   always_loaded: 2000
   mandatory_workflows: 3000  # auto-loaded workflows with 🔒 markers
-  typical_session: 9000   # always + mandatory_workflows + start + per_task
-  maximum_allowed: 16000  # always + mandatory_workflows + start + per_task + on_demand
+  typical_session: 10500  # always + mandatory_workflows + start + per_task
+  maximum_allowed: 19600  # always + mandatory_workflows + start + per_task + on_demand
   reserve_buffer: 2000    # for unexpected complexity
 
 # Compaction strategy

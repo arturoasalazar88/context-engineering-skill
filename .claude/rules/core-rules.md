@@ -14,9 +14,3 @@
 ## When to Load Detailed Rules
 
 - BEFORE marking tasks resolved -> Load `context/workflows/user-approval.md`
-{{OPTIONAL_RULE_TRIGGERS}}
-
-## When Applicable
-
-- User approval detailed protocol: see `context/workflows/user-approval.md`
-{{OPTIONAL_RULE_REFERENCES}}
