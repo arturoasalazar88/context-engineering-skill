@@ -145,7 +145,29 @@ Open in Claude Code and run: `/context-init`
 
 ### Upgrading Existing Installation
 
-If you already have context engineering and want to add the new `/context-refactor` command:
+**Automated Update (Recommended):**
+
+```bash
+# 1. In your project, run:
+/context-update --check
+
+# 2. Review what will be updated:
+/context-update --diff
+
+# 3. Apply updates with automatic backup:
+/context-update --apply
+```
+
+The `/context-update` command:
+- Fetches latest fixes from GitHub (no cloning needed)
+- Checks what fixes are already applied
+- Creates automatic backup before changes
+- Updates commands and applies bug fixes
+- Tracks applied fixes in `context/APPLIED-FIXES.yaml`
+
+**Manual Update:**
+
+If you need to manually update commands:
 
 ```bash
 cd context-engineering-skill
@@ -394,6 +416,53 @@ See [docs/commands-reference.md](docs/commands-reference.md) for detailed audit 
 
 ---
 
+## Fix Tracking System
+
+Context engineering uses a centralized fix tracking system to manage bug fixes and updates.
+
+### How It Works
+
+**1. Central Fixes Manifest (`FIXES-MANIFEST.yaml`)**
+- Located in the skill repository
+- Lists all available bug fixes with metadata
+- Fetched via GitHub raw URLs (no cloning needed)
+- Single source of truth for what's available
+
+**2. Project Applied Fixes (`context/APPLIED-FIXES.yaml`)**
+- Created in each project using context engineering
+- Tracks which fixes have been applied
+- Prevents duplicate application
+- Maintains update history
+
+**3. Update Workflow**
+```bash
+# Check for available updates
+/context-update --check
+
+# See detailed changes
+/context-update --diff
+
+# Apply updates with automatic backup
+/context-update --apply
+```
+
+**Benefits:**
+- No need to manually track what's been applied
+- Automatic detection of already-applied fixes
+- Safe updates with backup creation
+- Works without cloning (uses GitHub raw URLs)
+- Version-aware: knows what version each fix targets
+
+### Available Fixes
+
+Current fixes tracked in `FIXES-MANIFEST.yaml`:
+
+| ID | Title | Severity | Version | Status |
+|----|-------|----------|---------|--------|
+| BUG-001 | Workflow Tracking in /context-start | HIGH | 1.1.0 | FIXED |
+
+---
+
 ## What Gets Created
 
 After running `/context-init`, your project will have this structure:
@@ -415,6 +484,7 @@ your-project/
     CONTEXT-SCHEMA.yaml                   # What loads when (token budgets)
     MEMORY-PROTOCOL.md                    # Memory management guide
     SYSTEM.md                             # Server info & credentials
+    APPLIED-FIXES.yaml                    # Tracks applied bug fixes
     stories/
       INDEX.md                            # Story tracking index
       [generated stories]                 # From your documents
