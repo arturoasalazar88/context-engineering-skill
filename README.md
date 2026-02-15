@@ -18,6 +18,7 @@ A set of Claude Code slash commands that implement context engineering best prac
   - [/context-start](#context-start---session-management)
   - [/context-refactor](#context-refactor---implementation-audit--refactor)
   - [/context-update](#context-update---apply-bug-fixes--updates)
+  - [/context-close](#context-close---session-cleanup--metrics)
 - [What Gets Created](#what-gets-created)
 - [How It Works](#how-it-works)
 - [Customization](#customization)
@@ -30,14 +31,16 @@ A set of Claude Code slash commands that implement context engineering best prac
 
 ## What Is This?
 
-Four Claude Code slash commands that automate context engineering:
+Six Claude Code slash commands that automate context engineering:
 
 | Command | Purpose | When to Use |
 |---------|---------|-------------|
 | `/context-init` | Initialize project with context engineering | Once, at project setup |
 | `/context-ingest` | Add new context intelligently | Anytime you have new info to add |
 | `/context-start` | Start session with proper context loading | Beginning of every session |
+| `/context-close` | Close session with compliance checks & metrics | End of every session |
 | `/context-refactor` | Audit and refactor existing implementation | When upgrading or fixing issues |
+| `/context-update` | Apply bug fixes and feature updates | When updates are available |
 
 **Context engineering** is a set of principles for managing AI agent context effectively:
 - Keep always-loaded context minimal (<2,500 tokens)
@@ -69,6 +72,9 @@ cd context-engineering-skill
 
 # 4. Every session, start with:
 /context-start
+
+# 5. End every session with:
+/context-close
 ```
 
 ---
@@ -460,6 +466,7 @@ Current fixes tracked in `FIXES-MANIFEST.yaml`:
 | ID | Title | Severity | Version | Status |
 |----|-------|----------|---------|--------|
 | BUG-001 | Workflow Tracking in /context-start | HIGH | 1.1.0 | FIXED |
+| FEATURE-001 | Add /context-close command | - | 1.2.0 | FIXED |
 
 ---
 
@@ -475,9 +482,11 @@ your-project/
       context-init.md                     # /context-init command
       context-ingest.md                   # /context-ingest command
       context-start.md                    # /context-start command
+      context-close.md                    # /context-close command
       context-refactor.md                 # /context-refactor command
+      context-update.md                   # /context-update command
     rules/
-      core-rules.md                       # 7 mandatory agent rules
+      core-rules.md                       # 8 mandatory agent rules
       context-enforcement.md              # Session checklists
       context-window-monitoring.md        # Token usage monitoring
   context/

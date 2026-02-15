@@ -23,15 +23,21 @@
 | ID | Title | Status | Updated | File |
 |----|-------|--------|---------|------|
 | BUG-001 | Validate Workflow Tracking Fix | ACTIVE | 2026-02-14 | [ACTIVE-BUG001-validate-fix.md](ACTIVE-BUG001-validate-fix.md) |
+| 002 | Add /context-close Command | ACTIVE | 2026-02-15 | [ACTIVE-002-context-close-command.md](ACTIVE-002-context-close-command.md) |
 
 > **LOAD ACTIVE STORY**: Read the active story file for detailed tasks and next actions.
 
 ---
 
-## Last Session: 2026-02-14
+## Last Session: 2026-02-15
 
 **Completed:**
-- Context engineering initialization
+- BUG-001 fix validated in triptaste/landing-page ✅
+- Fix tracking system implemented and tested
+- Merge conflicts resolved
+
+**In Progress:**
+- Story 002: /context-close command specification
 
 > **Full session history:** See [SESSION-LOG.md](SESSION-LOG.md)
 

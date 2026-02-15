@@ -2,7 +2,7 @@
 # Central registry of all bug fixes and updates
 # Used by /context-update to check and apply fixes
 
-version: "1.1.0"
+version: "1.2.0"
 repository: "https://github.com/arturoasalazar88/context-engineering-skill"
 raw_base_url: "https://raw.githubusercontent.com/arturoasalazar88/context-engineering-skill/main"
 
@@ -58,11 +58,48 @@ fixes:
       bug_report: "docs/bugs/BUG-001-workflow-tracking.md"
       fix_manifest: "docs/bugs/BUG-001-workflow-tracking.md#fix-manifest"
 
-# Future fixes will be added here as:
+  - id: "FEATURE-001"
+    title: "Add /context-close command for session cleanup"
+    type: "feature"
+    status: "FIXED"
+    added_in: "1.2.0"
+    date: "2026-02-15"
+
+    description: |
+      New /context-close command that ensures proper session cleanup:
+      - Checks for unsaved work (git status + active stories)
+      - Verifies user approval workflow compliance
+      - Runs context engineering compliance checks
+      - Reports token savings from hybrid Gemini workflow
+      - Provides session statistics and cleanup recommendations
+      - Handles Gemini memory cleanup when applicable
+
+    impact:
+      - "Enforces context engineering standards at session end"
+      - "Tracks token savings from hybrid workflow usage"
+      - "Prevents work loss from unclosed sessions"
+      - "Complements /context-start as bookend session management"
+
+    files_changed:
+      - path: "commands/context-close.md"
+        type: "new"
+        target: ".claude/commands/context-close.md"
+        description: "New command file - session close workflow"
+
+    verification:
+      - "Run /context-close in project"
+      - "Verify unsaved work check detects uncommitted changes"
+      - "Verify compliance checks run against context-enforcement.md"
+      - "Verify token savings report shows when hybrid workflow enabled"
+      - "Verify --quick flag skips token savings and statistics"
+
+    documentation:
+      story: "context/stories/ACTIVE-002-context-close-command.md"
+
+# Future entries:
 #
-# - id: "BUG-002"
+# - id: "BUG-002" or "FEATURE-002"
 #   title: "..."
-#   severity: "MEDIUM|HIGH|CRITICAL"
+#   type: "bugfix" or "feature"
 #   status: "FIXED|IN_PROGRESS|PLANNED"
-#   fixed_in: "1.2.0"
 #   ...
