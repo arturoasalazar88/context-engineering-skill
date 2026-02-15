@@ -119,6 +119,7 @@ Beyond bug-specific fixes, also compare all command files and templates:
 | `commands/context-ingest.md` | `.claude/commands/context-ingest.md` | Always safe |
 | `commands/context-refactor.md` | `.claude/commands/context-refactor.md` | Always safe |
 | `commands/context-update.md` | `.claude/commands/context-update.md` | Always safe |
+| `commands/context-close.md` | `.claude/commands/context-close.md` | Always safe |
 
 For each pair:
 - **NEW**: Exists in source but not project
