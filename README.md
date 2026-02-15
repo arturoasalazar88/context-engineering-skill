@@ -17,6 +17,7 @@ A set of Claude Code slash commands that implement context engineering best prac
   - [/context-ingest](#context-ingest---smart-context-ingestion)
   - [/context-start](#context-start---session-management)
   - [/context-refactor](#context-refactor---implementation-audit--refactor)
+  - [/context-update](#context-update---apply-bug-fixes--updates)
 - [What Gets Created](#what-gets-created)
 - [How It Works](#how-it-works)
 - [Customization](#customization)
