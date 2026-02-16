@@ -24,6 +24,7 @@
 |----|-------|--------|---------|------|
 | BUG-001 | Validate Workflow Tracking Fix | ACTIVE | 2026-02-14 | [ACTIVE-BUG001-validate-fix.md](ACTIVE-BUG001-validate-fix.md) |
 | 002 | Add /context-close Command | ACTIVE | 2026-02-15 | [ACTIVE-002-context-close-command.md](ACTIVE-002-context-close-command.md) |
+| 003 | Add Antigravity IDE Support | ACTIVE | 2026-02-15 | [ACTIVE-003-antigravity-support.md](ACTIVE-003-antigravity-support.md) |
 
 > **LOAD ACTIVE STORY**: Read the active story file for detailed tasks and next actions.
 
