@@ -3,7 +3,7 @@
 <metadata>
   <project>context-engineering-skill</project>
   <components>skill, commands, templates, docs</components>
-  <last_updated>2026-02-14</last_updated>
+  <last_updated>2026-02-15</last_updated>
 </metadata>
 
 > **START HERE**: Load [context/stories/INDEX.md](context/stories/INDEX.md) for active tasks.
@@ -43,6 +43,7 @@
 | Tier | What | When | Budget |
 |------|------|------|--------|
 | Always | CLAUDE.md, core-rules.md | Every session | ~2K tokens |
+| Mandatory | Workflows with 🔒 markers | Auto-loaded at session start | ~3K tokens |
 | Start | stories/INDEX.md | Session start | ~1K tokens |
 | Task | Active story + relevant context | Starting specific task | ~3K tokens |
 | Demand | Workflow rules, troubleshooting, etc. | When specific need arises | ~5K tokens |
@@ -71,11 +72,13 @@
 
 **At Session Start:**
 1. You automatically load: CLAUDE.md + .claude/rules/*.md (~2K tokens)
-2. ALWAYS read context/stories/INDEX.md next
-3. Load active story file for task being worked on
+2. /context-start scans context/workflows/ and auto-loads files with 🔒 MANDATORY markers (~3K tokens)
+3. ALWAYS read context/stories/INDEX.md next
+4. Load active story file for task being worked on
 
 **During Work:**
-- Load workflow rules from context/workflows/ ONLY when needed
+- Mandatory workflows (🔒) are already loaded and must be followed
+- Load additional workflow rules from context/workflows/ ONLY when needed
 - Load domain files (docs/) only when task requires them
 - Check Context Loading Tiers table if unsure what to load
 
@@ -97,6 +100,7 @@
 
 | Date | Learning |
 |------|----------|
+| 2026-02-15 | coding-sub-agent.md: Mandatory workflow uses Gemini CLI for code gen (60-70% token savings) |
 | 2026-02-14 | BUG-001: /context-start must scan context/workflows/ for mandatory workflows (🔒 markers) |
 | 2026-02-14 | All MD files in this repo are critical context - docs, commands, templates, bug reports |
 | 2026-02-14 | Development is 100% Claude Code generated - no manual edits to maintain consistency |
