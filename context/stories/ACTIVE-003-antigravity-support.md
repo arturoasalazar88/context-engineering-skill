@@ -24,31 +24,39 @@ Enable context-engineering-skill to support both Claude Code and Antigravity IDE
 
 | Question | Status | Findings |
 |----------|--------|----------|
-| What is Antigravity IDE's directory structure? | 🔍 RESEARCHING | Similar to `.claude/`, likely `.antigravity/` |
-| What format does Antigravity use for skills? | 🔍 RESEARCHING | SKILL.md files with YAML frontmatter + Markdown body |
-| How are skills organized in Antigravity? | 🔍 RESEARCHING | Skill-specific directories under `.antigravity/skills/` or `.agent/skills/` |
-| Are there documentation URLs for Antigravity? | 🔍 RESEARCHING | Need official Google Antigravity IDE docs |
-| What's the command invocation format? | 🔍 RESEARCHING | Likely `/skill-name` similar to Claude Code |
-| How does Antigravity handle rules/context? | 🔍 RESEARCHING | Unknown - needs investigation |
+| What is Antigravity IDE's directory structure? | ✅ RESOLVED | `.agent/` directory with SKILL.md + workflows/ subdirectory |
+| What format does Antigravity use for skills? | ✅ RESOLVED | Root SKILL.md with YAML frontmatter, workflows as separate .md files |
+| How are skills organized in Antigravity? | ✅ RESOLVED | `.agent/SKILL.md` (skill overview) + `.agent/workflows/*.md` (individual commands) |
+| Are there documentation URLs for Antigravity? | ⚠️ DEFERRED | Not needed - format discovered from `.agent/` example |
+| What's the command invocation format? | ✅ RESOLVED | Workflows in `.agent/workflows/*.md` with YAML frontmatter |
+| How does Antigravity handle rules/context? | ✅ RESOLVED | Same as Claude Code - uses project `context/` directory |
 
 ### Research Tasks
 
-- [ ] Use Gemini web_search to find official Antigravity IDE documentation
-- [ ] Identify Antigravity IDE's project structure conventions
-- [ ] Determine SKILL.md format specification (YAML frontmatter schema)
-- [ ] Understand skill loading mechanism in Antigravity
-- [ ] Investigate context persistence between Claude Code and Antigravity sessions
-- [ ] Check if Antigravity supports `.claude/rules/` or requires different format
+- [x] ~~Use Gemini web_search to find official Antigravity IDE documentation~~ (Not needed)
+- [x] Identify Antigravity IDE's project structure conventions (Found in `.agent/`)
+- [x] Determine SKILL.md format specification (YAML frontmatter schema)
+- [x] Understand skill loading mechanism in Antigravity
+- [x] Investigate context persistence between Claude Code and Antigravity sessions
+- [x] Check if Antigravity supports `.claude/rules/` or requires different format
+
+**Key Discovery:** The `.agent/` directory in this repo shows the Antigravity format:
+- `.agent/SKILL.md` - Root skill descriptor with YAML frontmatter (name, description)
+- `.agent/workflows/*.md` - Individual workflow files with YAML frontmatter (description only)
+- Format uses simple YAML: `description: "..."` for workflows
+- Commands are named the same: `context-start.md`, `context-init.md`, etc.
 
 ## Implementation Tasks
 
-### Phase 1: Template Adaptation
+### Phase 1: Template Adaptation ✅ COMPLETE
 
-- [ ] Create `.antigravity/` template structure in `templates/`
-- [ ] Convert command markdown files to Antigravity SKILL.md format
-- [ ] Add YAML frontmatter to skill definitions (name, description, version, etc.)
-- [ ] Organize skills in appropriate directory structure
-- [ ] Create Antigravity-compatible rules format (if different from `.claude/rules/`)
+- [x] Create `.antigravity/` template structure in `templates/`
+- [x] Convert command markdown files to Antigravity SKILL.md format
+- [x] Add YAML frontmatter to skill definitions (name, description, version, etc.)
+- [x] Organize skills in appropriate directory structure
+- [x] Create Antigravity-compatible rules format (if different from `.claude/rules/`)
+
+**Result:** Created `templates/antigravity/` with SKILL.template.md and workflows/ directory
 
 ### Phase 2: Installer Enhancement
 
@@ -90,12 +98,13 @@ category: context-management
 [Markdown instructions follow...]
 ```
 
-### Phase 4: Documentation
+### Phase 4: Documentation 🚧 IN PROGRESS
 
-- [ ] Update README.md with Antigravity IDE support information
-- [ ] Document installation process for Antigravity
-- [ ] Add workflow guide: Claude Code → Antigravity IDE transition
-- [ ] Create troubleshooting section for Antigravity-specific issues
+- [x] Update README.md with Antigravity IDE support information
+- [x] Add workflow guide: Claude Code → Antigravity IDE transition
+- [x] Document IDE compatibility in README
+- [ ] Document installation process for Antigravity (waiting for installer enhancement)
+- [ ] Create troubleshooting section for Antigravity-specific issues (after testing)
 - [ ] Update docs/context-engineering-guide.md with IDE-agnostic guidance
 
 ### Phase 5: Testing
@@ -185,9 +194,10 @@ context-engineering-skill/
 
 | Blocker | Status | Resolution |
 |---------|--------|------------|
-| Antigravity IDE documentation not found | 🔍 OPEN | Continue web research, check Google Cloud docs |
-| SKILL.md format specification unknown | 🔍 OPEN | Analyze examples, infer from web search results |
-| Antigravity rules format uncertain | 🔍 OPEN | Test with minimal example once format determined |
+| ~~Antigravity IDE documentation not found~~ | ✅ RESOLVED | Found `.agent/` directory with format examples |
+| ~~SKILL.md format specification unknown~~ | ✅ RESOLVED | Discovered from `.agent/` structure |
+| ~~Antigravity rules format uncertain~~ | ✅ RESOLVED | Uses same `context/` as Claude Code |
+| Gemini rate limits (429 errors) | 🔴 BLOCKING | Wait for rate limits to reset. Cannot generate install.sh modifications per mandatory workflow. |
 
 ## Decisions Made
 
@@ -239,6 +249,10 @@ context-engineering-skill/
 | Date | Update |
 |------|--------|
 | 2026-02-15 | Story created. Initial research via Gemini web_search completed. Found `.antigravity` references similar to `.claude`. SKILL.md format with YAML frontmatter identified. |
+| 2026-02-15 | Research phase COMPLETED. Discovered `.agent/` directory with complete Antigravity format examples. Ready for implementation. |
+| 2026-02-15 | Phase 1 COMPLETE: Created `templates/antigravity/` with SKILL.template.md and workflows. Template adaptation finished. |
+| 2026-02-15 | Phase 2 BLOCKED: Gemini rate limits (429 errors) preventing install.sh code generation per mandatory workflow. |
+| 2026-02-15 | Phase 4 STARTED: Updated README.md with IDE compatibility section, workflow example, and dual IDE support documentation. |
 
 ## Outcome
 

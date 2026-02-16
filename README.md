@@ -1,12 +1,17 @@
-# Context Engineering Skill for Claude Code
+# Context Engineering Skill
 
-A set of Claude Code slash commands that implement context engineering best practices for any project. Initialize projects with optimal context structure, ingest new context intelligently, and manage sessions with proper context loading.
+A set of commands for AI coding agents (Claude Code, Antigravity IDE) that implement context engineering best practices for any project. Initialize projects with optimal context structure, ingest new context intelligently, and manage sessions with proper context loading.
+
+**Supported IDEs:**
+- **Claude Code** - Uses `.claude/commands/` directory for slash commands
+- **Antigravity IDE** - Uses `.agent/workflows/` directory for skill workflows
 
 ---
 
 ## Table of Contents
 
 - [What Is This?](#what-is-this)
+- [IDE Compatibility](#ide-compatibility)
 - [Quick Start](#quick-start)
 - [Installation](#installation)
   - [Automated Installation](#automated-installation-recommended)
@@ -50,6 +55,33 @@ Six Claude Code slash commands that automate context engineering:
 - Track work through stories with checklists
 
 These principles were developed through real-world usage, reducing static context from 33K to 2K tokens (94% reduction) while improving agent effectiveness.
+
+---
+
+## IDE Compatibility
+
+Context engineering works with multiple AI coding agents:
+
+| IDE | Directory | Format | Status |
+|-----|-----------|--------|--------|
+| **Claude Code** | `.claude/commands/` | Markdown slash commands | ✅ Fully supported |
+| **Antigravity IDE** | `.agent/workflows/` | Markdown with YAML frontmatter | 🚧 Coming soon (Story 003) |
+
+**Key Design:** The `context/` directory is IDE-agnostic. All context files (stories, workflows, rules) work identically across both IDEs, enabling seamless workflow transitions.
+
+**Workflow Example:**
+```bash
+# Day 1: Claude Code + VS Code
+/context-start
+# ... work on tasks ...
+/context-close
+
+# Day 2: Antigravity IDE
+/context-start
+# Session continues with full context from Day 1
+```
+
+> **Note:** Antigravity IDE support is currently in development. The installer will support choosing your target IDE during installation.
 
 ---
 
@@ -603,7 +635,11 @@ rm -rf context-engineering-skill/
 
 ## Requirements
 
-- **Claude Code** (any version with slash command support)
+**Supported AI Coding Agents:**
+- **Claude Code** (any version with slash command support) - Fully supported
+- **Antigravity IDE** - Coming soon
+
+**System Requirements:**
 - No external dependencies (no npm, pip, or other packages)
 - Works on any OS (macOS, Linux, Windows)
 - Works with any programming language or framework
